@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Square({ value, onSquareClick }) {
   return (
@@ -9,19 +9,24 @@ function Square({ value, onSquareClick }) {
 }
 
 function App({ xIsNext, squares, onPlay }) {
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const winner = calculateWinner(squares);
+    if (winner) {
+      setStatus("Winner: " + winner);
+    } else if (!squares.includes(null)) {
+      setStatus("It's a Draw!");
+    } else {
+      setStatus("Next Player: " + (xIsNext ? "X" : "O"));
+    }
+  }, [xIsNext, squares]);
+
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) return;
     const nextSquares = squares.slice();
     nextSquares[i] = xIsNext ? "X" : "O";
     onPlay(nextSquares);
-  }
-
-  const winner = calculateWinner(squares);
-  let status = " ";
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-    status = "Next Player: " + (xIsNext ? "X" : "0");
   }
 
   return (
